@@ -1,0 +1,35 @@
+---
+- name: Setup on Managed Node (managed1)
+  hosts: managed
+  become: yes
+  tasks:
+    - name: Create user webadmin with sudo privileges
+      user:
+        name: webadmin
+        password: "{{ 'password' | password_hash('sha512') }}"
+        state: present
+        groups: wheel
+        append: yes
+
+    - name: Install nginx
+      apt:
+        name: nginx
+        state: present
+
+    - name: Start nginx service
+      service:
+        name: nginx
+        state: started
+
+    - name: Encrypt credentials file on managed1
+      ansible.builtin.copy:
+        content: |
+          user: admin
+          password: securepass
+        dest: /home/hassan/prod_credentials.yml
+      vars:
+        ansible_vault_password_file: /home/hassan/.vault_pass.txt
+
+    - name: Debug Message
+      debug:
+        msg: "Managed node setup completed successfully!"

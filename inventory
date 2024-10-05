@@ -1,0 +1,6 @@
+[managed]
+192.168.147.128
+
+[all:vars]
+ansible_user=devops
+ansible_ssh_private_key_file=/home/hassan/.ssh/id_rsa
